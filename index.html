@@ -63,6 +63,19 @@
             border-radius: 4px;
             font-size: 1em;
         }
+        .transaction-table {
+            margin-top: 30px;
+            width: 80%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .transaction-table th, .transaction-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .transaction-table th {
+            background-color: #f4f4f4;
+        }
     </style>
 </head>
 <body>
@@ -123,6 +136,35 @@
                 <input type="text" id="simulate-flux-output" placeholder="Équiv. FLUX" readonly>
             </div>
         </div>
+
+        <!-- Tableau des transactions -->
+        <div class="transaction-table-container">
+            <h3>Tableau des Transactions</h3>
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Type de Transaction</th>
+                        <th>Quantité</th>
+                        <th>Ratio de Transaction</th>
+                        <th>Équivalent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Achat DATA</td>
+                        <td><input type="number" id="data-transaction-quantity" placeholder="Quantité DATA" oninput="updateTransaction('data')"></td>
+                        <td><input type="number" id="data-transaction-ratio" placeholder="Ratio" oninput="updateTransaction('data')"></td>
+                        <td><span id="data-transaction-equivalent">-</span> FLUX</td>
+                    </tr>
+                    <tr>
+                        <td>Vente FLUX</td>
+                        <td><input type="number" id="flux-transaction-quantity" placeholder="Quantité FLUX" oninput="updateTransaction('flux')"></td>
+                        <td><input type="number" id="flux-transaction-ratio" placeholder="Ratio" oninput="updateTransaction('flux')"></td>
+                        <td><span id="flux-transaction-equivalent">-</span> DATA</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -164,6 +206,30 @@
                 }
             }
         });
+
+        function updateTransaction(type) {
+            if (type === 'data') {
+                const quantity = parseFloat(document.getElementById('data-transaction-quantity').value);
+                const ratio = parseFloat(document.getElementById('data-transaction-ratio').value);
+                const equivalentElement = document.getElementById('data-transaction-equivalent');
+
+                if (!isNaN(quantity) && !isNaN(ratio) && ratio > 0) {
+                    equivalentElement.textContent = (quantity / ratio).toFixed(4);
+                } else {
+                    equivalentElement.textContent = '-';
+                }
+            } else if (type === 'flux') {
+                const quantity = parseFloat(document.getElementById('flux-transaction-quantity').value);
+                const ratio = parseFloat(document.getElementById('flux-transaction-ratio').value);
+                const equivalentElement = document.getElementById('flux-transaction-equivalent');
+
+                if (!isNaN(quantity) && !isNaN(ratio) && ratio > 0) {
+                    equivalentElement.textContent = (quantity * ratio).toFixed(4);
+                } else {
+                    equivalentElement.textContent = '-';
+                }
+            }
+        }
 
         function saveChartData() {
             const chartData = {
